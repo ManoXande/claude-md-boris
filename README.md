@@ -16,16 +16,17 @@ Todo projeto decente que usa Claude Code precisa de um `CLAUDE.md` bem feito. Na
 2. Fica ou exagerado (300+ linhas que o Claude ignora) ou raso demais.
 3. Não tem um loop pra registrar lições aprendidas.
 
-Esta skill resolve isso com quatro mecanismos:
+Esta skill resolve isso com cinco mecanismos:
 
 | Mecanismo | O que faz |
 |---|---|
+| **Detecção de idioma** | Identifica se você está falando em PT, EN, ES, FR, etc. e conduz toda a conversa nesse idioma |
 | **Triagem** | Decide sozinha entre modo **full** (projeto de verdade), **lite** (script/protótipo) ou **update** (já existe CLAUDE.md) |
-| **Auto-detecção** | Lê `package.json`, `pyproject.toml`, `Cargo.toml`, `go.mod`, etc. pra inferir stack, framework e comandos |
-| **Entrevista mínima** | Só pergunta o que não deu pra detectar, em PT-BR, via múltipla escolha |
+| **Auto-detecção de stack** | Lê `package.json`, `pyproject.toml`, `Cargo.toml`, `go.mod`, etc. pra inferir stack, framework e comandos |
+| **Entrevista mínima** | Só pergunta o que não deu pra detectar, no seu idioma, via múltipla escolha |
 | **Loop de lições** | Comando `"registra essa lição"` anexa regras no `CLAUDE.md` + `tasks/lessons.md` com diff antes de gravar |
 
-Saída bilíngue: perguntas em português, arquivo final em inglês (padrão Boris / comunidade).
+**Chat segue o usuário; arquivo segue a comunidade.** O CLAUDE.md gerado fica em inglês por default (compatível com repos públicos e com o Claude Code), mas se você pedir em outro idioma a skill respeita. Detalhes em `references/language-detection.md`.
 
 ---
 
@@ -106,8 +107,9 @@ claude-md-boris/
 │   ├── tasks-todo.md.template
 │   └── tasks-lessons.md.template
 ├── references/
+│   ├── language-detection.md      ← regra de qual idioma usar (chat e arquivo)
 │   ├── triage-rules.md            ← critérios full / lite / update
-│   ├── interview-questions.md     ← catálogo de perguntas PT-BR
+│   ├── interview-questions.md     ← catálogo de perguntas (base PT-BR, traduzido em uso)
 │   ├── stack-detection.md         ← mapa marcador → stack → comandos
 │   ├── lessons-loop.md            ← formato exato das lições
 │   └── sources.md                 ← fontes públicas da metodologia

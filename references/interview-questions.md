@@ -1,6 +1,8 @@
-# Catálogo de Perguntas (PT-BR)
+# Catálogo de Perguntas (base PT-BR)
 
 Use como biblioteca. Nunca mande tudo de uma vez. Em cada rodada, pegue no máximo 4 perguntas realmente úteis pra esse projeto, dadas as coisas que você já detectou.
+
+**Idioma:** as perguntas abaixo estão em PT-BR como base. Se o idioma detectado do usuário for outro (ver `language-detection.md`), traduza labels e options mantendo o sentido — termos técnicos estáveis (TypeScript, snake_case, Plan Mode, TDD) ficam como estão. Mantenha a opção recomendada marcada com "(Recommended)" ou equivalente traduzido ("(Recomendado)", "(Recomendada)", "(Recommandé)").
 
 ## Rodada 1 — Contexto do projeto
 

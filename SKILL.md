@@ -1,20 +1,51 @@
 ---
 name: claude-md-boris
-description: Cria e mantém o arquivo CLAUDE.md de um projeto seguindo a metodologia do Boris Cherny (Anthropic) — faz triagem pra decidir entre versão completa ou lite, detecta stack automaticamente (package.json, pyproject.toml, Cargo.toml, go.mod, etc.), roda uma entrevista em português pra completar os gaps, gera CLAUDE.md + tasks/todo.md + tasks/lessons.md, e fecha o loop de auto-melhoria atualizando o arquivo com lições aprendidas. Use sempre que o usuário pedir para "criar CLAUDE.md", "configurar regras do projeto pro Claude", "inicializar Claude Code no projeto", "setup do Claude Code", "padronizar o projeto pra IA", "atualizar o CLAUDE.md", "adicionar uma lição no CLAUDE.md", "registrar esse erro pra não repetir", ou mencionar Boris Cherny / template do Boris / metodologia CLAUDE.md. Também dispare proativamente quando o usuário estiver começando um projeto novo com Claude Code ou depois de uma correção importante que mereça virar regra permanente.
+description: Cria e mantém o arquivo CLAUDE.md de um projeto seguindo a metodologia do Boris Cherny (Anthropic). Detecta automaticamente o idioma que o usuário está usando (PT-BR, EN, ES, etc.) e conduz toda a conversa nesse idioma. Faz triagem pra decidir entre versão completa ou lite, detecta stack automaticamente (package.json, pyproject.toml, Cargo.toml, go.mod, etc.), roda uma entrevista curta pra completar os gaps, gera CLAUDE.md + tasks/todo.md + tasks/lessons.md, e fecha o loop de auto-melhoria atualizando o arquivo com lições aprendidas. Use sempre que o usuário pedir para "criar CLAUDE.md", "configurar regras do projeto pro Claude", "inicializar Claude Code no projeto", "setup do Claude Code", "padronizar o projeto pra IA", "atualizar o CLAUDE.md", "adicionar uma lição no CLAUDE.md", "registrar esse erro pra não repetir", "create CLAUDE.md", "set up Claude Code", "initialize .claude folder", "register this lesson", "crear CLAUDE.md", ou mencionar Boris Cherny / template do Boris / metodologia CLAUDE.md. Também dispare proativamente quando o usuário estiver começando um projeto novo com Claude Code ou depois de uma correção importante que mereça virar regra permanente.
 ---
 
 # CLAUDE.md Boris — Gerador e Mantenedor
 
 Skill baseada na metodologia pública do Boris Cherny (criador do Claude Code / Anthropic) e nas convenções da comunidade (ver `references/sources.md`).
 
-Ela faz quatro coisas bem feitas:
+Ela faz cinco coisas bem feitas:
 
-1. **Triagem** — decide se o projeto merece um CLAUDE.md completo ou uma versão lite (não polua projetinhos).
-2. **Auto-detecção** — lê o sistema de arquivos pra inferir stack, comandos, convenções, evitando perguntar o óbvio.
-3. **Entrevista mínima** — só pergunta o que não deu pra detectar, em português, com opções sugeridas.
-4. **Loop de auto-melhoria** — depois de criado, oferece comandos pra registrar lições aprendidas e manter o arquivo vivo.
+1. **Detecção de idioma** — identifica o idioma que o usuário está usando e conduz toda a conversa nele.
+2. **Triagem** — decide se o projeto merece um CLAUDE.md completo ou uma versão lite (não polua projetinhos).
+3. **Auto-detecção** — lê o sistema de arquivos pra inferir stack, comandos, convenções, evitando perguntar o óbvio.
+4. **Entrevista mínima** — só pergunta o que não deu pra detectar, no idioma do usuário, com opções sugeridas.
+5. **Loop de auto-melhoria** — depois de criado, oferece comandos pra registrar lições aprendidas e manter o arquivo vivo.
 
-O conteúdo gerado é bilíngue: perguntas e conversas em PT-BR; o CLAUDE.md em inglês (padrão de comunidade, é o que o Claude Code lê melhor e o que facilita colaboração em repos públicos). Se o usuário pedir em PT, honre o pedido.
+O conteúdo do **arquivo gerado** segue o padrão da comunidade (em inglês por default) — é o que o Claude Code lê melhor e o que facilita colaboração em repos públicos. **Mas o usuário manda**: se ele está falando em português e quiser o CLAUDE.md em português também, honre. Ver `references/language-detection.md` pra regra exata.
+
+---
+
+## Passo 0 — Detecção de idioma (antes de tudo)
+
+A primeira coisa que você faz é identificar em que idioma o usuário está falando. Sem isso, você pode responder em português pra alguém que te escreveu em inglês — péssima experiência.
+
+**Regra simples:**
+
+1. Olhe a mensagem mais recente do usuário (e, se ambígua, as 2-3 anteriores).
+2. Identifique o idioma predominante: **PT-BR**, **PT-PT**, **EN**, **ES**, **FR**, **IT**, **DE** ou outro.
+3. Se houver mistura (comum em dev — "preciso criar um CLAUDE.md for this project"), siga o idioma da maior parte do texto do usuário, não dos termos técnicos.
+4. Em caso de empate real ou ambiguidade total, pergunte em 2 idiomas:
+   > "Prefere que eu siga em português ou inglês? / Should I continue in Portuguese or English?"
+
+**A partir dessa detecção, todo o restante desta skill opera no idioma detectado.** Isso inclui:
+
+- Perguntas do `AskUserQuestion` (traduza os labels e options de `references/interview-questions.md`).
+- Explicações e confirmações no chat.
+- A mensagem final de entrega.
+
+O **CLAUDE.md gerado** tem regra própria, mais conservadora (o arquivo pode ser lido por outras pessoas/ferramentas):
+
+- Default: **inglês**, independentemente do idioma do chat (padrão de comunidade + compatibilidade máxima com o Claude Code).
+- Exceção 1: se o usuário pedir explicitamente ("em português mesmo", "keep it in Portuguese", etc.), gere no idioma pedido.
+- Exceção 2: se o projeto já tem um `README.md` ou `CLAUDE.md` existente em outro idioma, pergunte se deve manter consistência.
+
+Detalhes completos em `references/language-detection.md`.
+
+---
 
 ---
 
@@ -37,7 +68,7 @@ Se o usuário só pediu uma dúvida conceitual ("o que é CLAUDE.md?"), responda
 
 ## Fluxo de execução
 
-Siga estes passos em ordem. Pule etapas que não se aplicam, mas nunca pule a triagem.
+Siga estes passos em ordem. Pule etapas que não se aplicam, mas nunca pule a detecção de idioma (Passo 0) e a triagem (Passo 1).
 
 ### Passo 1 — Triagem (obrigatório)
 
@@ -92,9 +123,10 @@ Use **AskUserQuestion** (uma chamada só, 2-4 perguntas) pra fechar os gaps. A l
 Regras pra perguntar bem:
 
 - **Nunca** pergunte o que detectou. Se `package.json` tem `"scripts": {"test": "vitest"}`, não pergunte qual é o comando de teste.
-- **Sempre** ofereça opções recomendadas (coloque "(Recommended)" na primeira).
+- **Sempre** ofereça opções recomendadas (coloque "(Recommended)" na primeira, ou equivalente no idioma do usuário — "(Recomendado)", "(Recomendada)").
 - **Limite-se** a 4 perguntas por rodada. Melhor duas rodadas curtas do que um questionário comprido.
 - **Contexto primeiro, regras depois**: primeira rodada pergunta sobre o projeto (tipo, audiência, nível de rigor); segunda rodada pergunta sobre regras específicas de código.
+- **No idioma do usuário**: as perguntas em `references/interview-questions.md` estão em PT-BR. Se o idioma detectado for outro, traduza os labels/options mantendo o sentido. Terminologia técnica ("TypeScript strict", "snake_case") fica como está.
 
 Perguntas de alto valor (sempre úteis quando faltam):
 1. Tipo de projeto / qual é o "porquê" dele (produção, side-project, estudo, cliente)
@@ -173,8 +205,9 @@ Se o usuário pedir algo que contraria o espírito da metodologia, explique educ
 
 Consulte os arquivos de referência quando precisar de detalhe:
 
+- `references/language-detection.md` — regra exata de qual idioma usar no chat e no arquivo
 - `references/triage-rules.md` — critérios completos pra decidir full/lite/update
-- `references/interview-questions.md` — catálogo de perguntas possíveis (PT-BR)
+- `references/interview-questions.md` — catálogo de perguntas possíveis (base PT-BR, traduzir no uso)
 - `references/stack-detection.md` — mapa arquivo → stack → comandos
 - `references/lessons-loop.md` — formato exato das lições e do diff
 - `references/sources.md` — referências públicas que fundamentam a metodologia
