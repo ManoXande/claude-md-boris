@@ -1,0 +1,17 @@
+# Lessons — {{PROJECT_NAME}}
+<!-- Append-only log. Each entry is a mistake we don't want to repeat. -->
+<!-- Claude reads this at the start of every session. -->
+
+## Format
+Each lesson follows this shape:
+
+```
+### YYYY-MM-DD — <short title>
+- **Pattern**: what the mistake looked like
+- **Rule**: what to do instead (imperative)
+- **Why**: the reasoning in one line
+```
+
+---
+
+<!-- Add new lessons below this line. Most recent first. -->

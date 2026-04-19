@@ -1,0 +1,20 @@
+# CLAUDE.md — {{PROJECT_NAME}}
+<!-- Lite version. Last updated: {{DATE}} -->
+
+## Context
+{{PROJECT_TYPE}} — {{STACK_SUMMARY}}.
+Main file(s): `{{SRC_DIR}}`.
+
+Run: `{{RUN_CMD}}`
+Test (if any): `{{TEST_CMD}}`
+
+## Rules
+- Keep it simple. Don't over-engineer.
+- Find the root cause before patching.
+- Don't add dependencies without asking.
+- Run what you changed before saying it works.
+
+## Forbidden
+{{FORBIDDEN_PATTERNS}}
+
+<!-- When this file grows past ~40 lines, upgrade to the full Boris template. -->

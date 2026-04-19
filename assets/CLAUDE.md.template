@@ -1,0 +1,65 @@
+# CLAUDE.md — Project Rules
+<!-- Last updated: {{DATE}} -->
+<!-- Version: 1.0 -->
+<!-- Methodology: Boris Cherny / Anthropic best practices -->
+
+## 1. Project Context
+This is a **{{PROJECT_TYPE}}** project ({{STACK_SUMMARY}}).
+Main code lives in `{{SRC_DIR}}`.
+
+Key libraries/frameworks: {{KEY_LIBS}}
+
+Important commands:
+- **Build**: `{{BUILD_CMD}}`
+- **Test**: `{{TEST_CMD}}`
+- **Lint**: `{{LINT_CMD}}`
+- **Dev**: `{{DEV_CMD}}`
+
+## 2. Core Principles (never violate)
+- **Simplicity first** — always make the smallest change that solves the problem.
+- **Never be lazy** — find the root cause; don't paper over symptoms.
+- **Senior-engineer standard** — code must be readable, testable, and elegant.
+- **Never touch production directly** — no manual DB edits, no ad-hoc deploys.
+- **Always run tests before marking a task complete.**
+
+## 3. Plan Mode (default for anything non-trivial)
+- For any task with 3+ steps or an architectural decision: enter Plan Mode first.
+- Write the plan to `tasks/todo.md` as checkable items.
+- If something goes wrong mid-execution: stop immediately and re-plan — don't force.
+- Confirm the plan with me before writing code.
+
+## 4. Subagent Strategy
+- Use subagents whenever possible to keep the main context clean.
+- One task per subagent (research, parallel analysis, long-running work).
+- For hard problems, throw more compute at it via parallel subagents.
+
+## 5. Self-Improvement Loop (most important)
+- After **any** correction from me, update `tasks/lessons.md` with the pattern of the mistake.
+- Write a short rule that prevents the same mistake from happening again.
+- Review `tasks/lessons.md` at the start of every session.
+- Meta-rule: "After any correction, offer to update this CLAUDE.md."
+
+## 6. Verification Before Done
+- Never mark a task complete without proving it works.
+- Run tests + check logs + diff behavior when relevant.
+- Ask yourself: *"Would a staff engineer approve this?"*
+- Use `/simplify` at the end for a final polish pass.
+
+## 7. Code-Specific Rules
+{{CODE_RULES}}
+
+## 8. Forbidden Patterns (mistakes we've already made)
+{{FORBIDDEN_PATTERNS}}
+
+## 9. Task Workflow
+1. Plan first → write it to `tasks/todo.md`
+2. Confirm plan with me
+3. Check items off as you go
+4. Summarize changes at a high level
+5. Add a short review to `tasks/todo.md`
+6. Capture any lessons in `tasks/lessons.md`
+
+## Final Instruction (for you, Claude)
+- When I correct you or you catch your own mistake, update the **Forbidden Patterns** section and append to `tasks/lessons.md`.
+- Keep this file short and focused — if it exceeds ~150 lines, move specifics to `.claude/rules/<topic>.md` and import with `@rules/<topic>.md`.
+- Use subagents and Plan Mode by default.
